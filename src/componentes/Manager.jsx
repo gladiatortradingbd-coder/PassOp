@@ -1,6 +1,7 @@
 import React from 'react'
 import { useRef, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'sonner';
 const Manager = () => {
     const [form, setform] = useState({ site: '', username: '', password: '' })
     const ref = useRef();
@@ -9,8 +10,11 @@ const Manager = () => {
 
     const copyText = (text) => {
         return () => {
-            alert("Copied to clipboard: " + text);
             navigator.clipboard.writeText(text);
+            toast.success('Copied to clipboard!', {
+                icon: '📋',
+                description: text.length > 30 ? text.substring(0, 30) + '...' : text,
+            });
         }
     }
 
@@ -37,29 +41,60 @@ const Manager = () => {
 
 
     const savePassword = () => {
+        if (!form.site || !form.username || !form.password) {
+            toast.error('Please fill all fields!', {
+                icon: '⚠️',
+            });
+            return;
+        }
         const newPassword = {...form, id: uuidv4()};
         setPasswordArry([...passwordArry, newPassword]);
         localStorage.setItem("passwords", JSON.stringify([...passwordArry, newPassword]));
         setform({ site: '', username: '', password: '' });
-        console.log(passwordArry)
+        toast.success('Password saved successfully!', {
+            icon: '🔐',
+            description: `Saved credentials for ${form.site}`,
+        });
     }
 
 
-    const deletePassword = (id) => {
-        console.log("Delete password with id: ", id);
-        let c = window.confirm("Are you sure you want to delete this password?");
-        if (!c) return;
-
+    const deletePassword = (id, showConfirm = true) => {
+        if (showConfirm) {
+            const passwordToDelete = passwordArry.find(item => item.id === id);
+            toast('Delete this password?', {
+                icon: '🗑️',
+                description: passwordToDelete?.site || 'Unknown site',
+                action: {
+                    label: 'Delete',
+                    onClick: () => {
+                        const updatedPasswords = passwordArry.filter(item => item.id !== id);
+                        setPasswordArry(updatedPasswords);
+                        localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+                        toast.success('Password deleted!', {
+                            icon: '✅',
+                        });
+                    }
+                },
+                cancel: {
+                    label: 'Cancel',
+                    onClick: () => {}
+                },
+            });
+            return;
+        }
         const updatedPasswords = passwordArry.filter(item => item.id !== id);
         setPasswordArry(updatedPasswords);
         localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
     }
 
     const editpassword = (id) => {
-        console.log("Edit password with id: ", id);
-        setform(passwordArry.find(item => item.id === id));
-        deletePassword(id);
-
+        const passwordToEdit = passwordArry.find(item => item.id === id);
+        setform(passwordToEdit);
+        deletePassword(id, false);
+        toast.info('Editing password...', {
+            icon: '✏️',
+            description: `Modify and save to update credentials for ${passwordToEdit?.site}`,
+        });
     }
 
     const handaleChange = (e) => {
