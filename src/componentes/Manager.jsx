@@ -45,11 +45,21 @@ const Manager = () => {
     }
 
 
-    const deletePassword = () => {
-        // setPasswordArry([...passwordArry, {...form, id: uuidv4()}]);
-        // localStorage.setItem("passwords", JSON.stringify([...passwordArry, form]));
-        // setform({ site: '', username: '', password: '' });
-        // console.log(passwordArry)
+    const deletePassword = (id) => {
+        console.log("Delete password with id: ", id);
+        let c = window.confirm("Are you sure you want to delete this password?");
+        if (!c) return;
+
+        const updatedPasswords = passwordArry.filter(item => item.id !== id);
+        setPasswordArry(updatedPasswords);
+        localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+    }
+
+    const editpassword = (id) => {
+        console.log("Edit password with id: ", id);
+        setform(passwordArry.find(item => item.id === id));
+        deletePassword(id);
+
     }
 
     const handaleChange = (e) => {
@@ -118,7 +128,7 @@ const Manager = () => {
                                     <td className='p-2'><div className='flex gap-2 items-center copybtn' onClick={copyText(item.password)}><span className='flex-1 overflow-hidden'>{item.password}</span><img className='cursor-pointer w-4' src="/icons/copy.png" alt="copy icon" /></div></td>
                                     <td className='p-2'>
                                         <div className='flex justify-center items-center'>
-                                            <span className='cursor-pointer mx-1'>
+                                            <span className='cursor-pointer mx-1'onClick={() => deletePassword(item.id)}>
                                                 <lord-icon
                                                     src="https://cdn.lordicon.com/jzinekkv.json"
                                                     trigger="hover"
@@ -128,7 +138,7 @@ const Manager = () => {
                                                 </lord-icon>
                                             </span>
 
-                                            <span className='cursor-pointer mx-1'>
+                                            <span className='cursor-pointer mx-1' onClick={() => editpassword(item.id)}>
                                                 <lord-icon
                                                     src="https://cdn.lordicon.com/exymduqj.json"
                                                     trigger="hover"

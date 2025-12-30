@@ -5,6 +5,7 @@ const Navbar = () => {
     <nav className='bg-slate-800 py-2 shadow-md shadow-purple-200 text-white'>
       <div className="mycontainer flex justify-between items-center px-4 py-2 h-14">
         <div className='logo font-bold text-2xl'>
+          <img className='inline-block w-10 h-10 mr-2' src="/icons/PassOP Logo.png" alt="PassOP Logo" />
           <span className='text-green-700'> &lt;</span>
           Pass
           <span className='text-green-700'>OP/&gt;</span>
