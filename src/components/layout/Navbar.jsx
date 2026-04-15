@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Logo } from '../common';
 import { Button } from '../ui';
 import { GITHUB_URL } from '../../constants';
+import { NavLink } from 'react-router-dom';
 
 /**
  * Responsive navigation bar component
@@ -10,9 +11,9 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { label: 'Home', href: '#' },
-    { label: 'About', href: '#about' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Home', to: '/' },
+    { label: 'About', to: '/about' },
+    { label: 'Contact', to: '/contact' },
   ];
 
   return (
@@ -26,12 +27,14 @@ const Navbar = () => {
           <ul className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <li key={link.label}>
-                <a
-                  href={link.href}
-                  className="text-white hover:text-green-400 transition-colors font-medium"
+                <NavLink
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `transition-colors font-medium ${isActive ? 'text-green-400' : 'text-white hover:text-green-400'}`
+                  }
                 >
                   {link.label}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>
@@ -91,13 +94,15 @@ const Navbar = () => {
             <ul className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="block py-2 px-4 text-white hover:bg-slate-700 rounded-lg transition-colors"
+                  <NavLink
+                    to={link.to}
+                    className={({ isActive }) =>
+                      `block py-2 px-4 rounded-lg transition-colors ${isActive ? 'bg-slate-700 text-green-400' : 'text-white hover:bg-slate-700'}`
+                    }
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.label}
-                  </a>
+                  </NavLink>
                 </li>
               ))}
               <li className="pt-2">
